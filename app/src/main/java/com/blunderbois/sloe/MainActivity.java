@@ -2,6 +2,7 @@ package com.blunderbois.sloe;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -63,23 +64,25 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        MoodModel moodModel = (MoodModel) dataSnapshot.getValue();
+                        MoodModel moodModel = dataSnapshot.getValue(MoodModel.class);
                         Map<String, String> data = new HashMap<>();
                         if (moodModel != null) {
                             if (moodModel.getOverall() != null)
                                 data.put("overall", moodModel.getOverall());
+                                Log.i("infoxx", moodModel.getOverall());
                             if (moodModel.getLec1() != null)
                                 data.put("lec1", moodModel.getLec1());
-                            if (moodModel.getLec2() != null)
+                            /*if (moodModel.getLec2() != null)
                                 data.put("lec2", moodModel.getLec2());
                             if (moodModel.getLec3() != null)
                                 data.put("lec3", moodModel.getLec3());
                             if (moodModel.getLec4() != null)
                                 data.put("lec4", moodModel.getLec4());
                             if (moodModel.getLec5() != null)
-                                data.put("lec5", moodModel.getLec5());
+                                data.put("lec5", moodModel.getLec5());*/
                         } else {
                             data.put("overall", "null");
+                            Log.i("infoxx", "null");
                         }
                         moodList.add(data);
                     }

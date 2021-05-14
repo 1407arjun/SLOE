@@ -1,6 +1,7 @@
 package com.blunderbois.sloe.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,12 +15,14 @@ import com.blunderbois.sloe.R;
 import com.blunderbois.sloe.models.MoodModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> {
-    ArrayList<MoodModel> list = new ArrayList<>();
+    ArrayList<Map<String, String>> list;
     Context context;
 
-    public MoodAdapter(ArrayList<MoodModel> list, Context context) {
+    public MoodAdapter(ArrayList<Map<String, String>> list, Context context) {
         this.list = list;
         this.context = context;
     }
@@ -33,8 +36,15 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        MoodModel model = list.get(position);
-        holder.date.setText(model.getDate());
+        Map<String, String> colors = new HashMap<>();
+        colors.put("Attentive", "#7CFC00");
+        colors.put("Unattentive", "#FF7F50");
+        colors.put("Confused", "#0000FF");
+        colors.put("Depressed", "#DC143C");
+        colors.put("Cheerful", "#FAFAD2");
+        colors.put("null", "#FFFFFF");
+        holder.date.setText(position + 1);
+        holder.moodCard.setCardBackgroundColor(Color.parseColor(colors.get(list.get(position).get("overall"))));
         holder.moodCard.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
