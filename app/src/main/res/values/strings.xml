@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">SLOE</string>
+
+    <string name="confused">😕</string>
+    <string name="depressed">😞</string>
+    <string name="happy">😀</string>
+    <string name="unattentive">😞</string>
+    <string name="attentive">🙂</string>
 </resources>

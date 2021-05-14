@@ -29,7 +29,7 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private ArrayList<Map<String, String>> moodList = new ArrayList<>();
+    private ArrayList<MoodModel> moodList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,46 +59,69 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+//            DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(mAuth.getCurrentUser().getUid());
+//            reference.addValueEventListener(new ValueEventListener() {
+//                @Override
+//                public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+//                        MoodModel moodModel = dataSnapshot.getValue(MoodModel.class);
+//                        Map<String, String> data = new HashMap<>();
+//                        if (moodModel != null) {
+//                            if (moodModel.getOverall() != null)
+//                                data.put("overall", moodModel.getOverall());
+//                                Log.i("infoxx", moodModel.getOverall());
+//                            if (moodModel.getLec1() != null)
+//                                data.put("lec1", moodModel.getLec1());
+//                            /*if (moodModel.getLec2() != null)
+//                                data.put("lec2", moodModel.getLec2());
+//                            if (moodModel.getLec3() != null)
+//                                data.put("lec3", moodModel.getLec3());
+//                            if (moodModel.getLec4() != null)
+//                                data.put("lec4", moodModel.getLec4());
+//                            if (moodModel.getLec5() != null)
+//                                data.put("lec5", moodModel.getLec5());*/
+//                        } else {
+//                            data.put("overall", "null");
+//                            Log.i("infoxx", "null");
+//                        }
+//                        moodList.add(data);
+//                    }
+//                }
+//
+//                @Override
+//                public void onCancelled(@NonNull DatabaseError error) {
+//                    Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+//                }
+//            });
+
+            MoodAdapter moodAdapter = new MoodAdapter(moodList,this);
+            GridLayoutManager layoutManager = new GridLayoutManager(this,5);
+            moodRecyclerView.setLayoutManager(layoutManager);
+            moodRecyclerView.setAdapter(moodAdapter);
+
             DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child(mAuth.getCurrentUser().getUid());
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                        MoodModel moodModel = dataSnapshot.getValue(MoodModel.class);
-                        Map<String, String> data = new HashMap<>();
-                        if (moodModel != null) {
-                            if (moodModel.getOverall() != null)
-                                data.put("overall", moodModel.getOverall());
-                                Log.i("infoxx", moodModel.getOverall());
-                            if (moodModel.getLec1() != null)
-                                data.put("lec1", moodModel.getLec1());
-                            /*if (moodModel.getLec2() != null)
-                                data.put("lec2", moodModel.getLec2());
-                            if (moodModel.getLec3() != null)
-                                data.put("lec3", moodModel.getLec3());
-                            if (moodModel.getLec4() != null)
-                                data.put("lec4", moodModel.getLec4());
-                            if (moodModel.getLec5() != null)
-                                data.put("lec5", moodModel.getLec5());*/
-                        } else {
-                            data.put("overall", "null");
-                            Log.i("infoxx", "null");
-                        }
-                        moodList.add(data);
+                    for(DataSnapshot dataSnapshot : snapshot.getChildren()){
+                        MoodModel model = dataSnapshot.getValue(MoodModel.class);
+                        moodList.add(model);
                     }
+                    moodAdapter.notifyDataSetChanged();
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-                    Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
+
                 }
             });
+
+
         }
 
-        MoodAdapter moodAdapter = new MoodAdapter(moodList,this);
-        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
-        moodRecyclerView.setLayoutManager(layoutManager);
-        moodRecyclerView.setAdapter(moodAdapter);
+
+
+
     }
 
     @Override

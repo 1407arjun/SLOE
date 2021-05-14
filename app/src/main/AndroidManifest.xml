@@ -11,6 +11,8 @@
         android:theme="@style/Theme.SLOE">
         <activity android:name=".MainActivity"></activity>
         <activity android:name=".LoginActivity" />
+        <activity android:name=".DataActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
