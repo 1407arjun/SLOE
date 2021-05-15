@@ -46,13 +46,6 @@ public class DataActivity extends AppCompatActivity {
         classRecyclerView.setLayoutManager(layoutManager);
         classRecyclerView.setAdapter(classAdapter);
 
-        ProgressDialog pd = new ProgressDialog(this);
-        pd.setIndeterminate(true);
-        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        pd.setTitle("Please Wait");
-        pd.setMessage("Logging in...");
-        pd.setCancelable(false);
-
         toolbar = findViewById(R.id.toolbar);
         moodText = findViewById(R.id.moodText);
         moodEmoji = findViewById(R.id.moodEmoji);
@@ -82,7 +75,6 @@ public class DataActivity extends AppCompatActivity {
                             classList.add(hashMap);
                         }
                         classAdapter.notifyDataSetChanged();
-                        pd.dismiss();
                     }
                 }
             }

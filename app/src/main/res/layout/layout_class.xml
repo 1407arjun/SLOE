@@ -7,6 +7,7 @@
     android:backgroundTint="@android:color/transparent">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/classCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
