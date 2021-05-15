@@ -35,8 +35,8 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.startTime.setText(list.get(position).get("startTime"));
-        holder.endTime.setText(list.get(position).get("endTime"));
+        holder.startTime.setText(list.get(position).get("startTime") + " hrs");
+        holder.endTime.setText(list.get(position).get("endTime") + " hrs");
         holder.mood.setText(list.get(position).get("mood"));
     }
 

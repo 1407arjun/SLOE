@@ -1,5 +1,6 @@
 package com.blunderbois.sloe;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -40,6 +41,18 @@ public class DataActivity extends AppCompatActivity {
         setContentView(R.layout.activity_data);
 
         RecyclerView classRecyclerView = findViewById(R.id.classRecyclerView);
+        ClassAdapter classAdapter = new ClassAdapter(this, classList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        classRecyclerView.setLayoutManager(layoutManager);
+        classRecyclerView.setAdapter(classAdapter);
+
+        ProgressDialog pd = new ProgressDialog(this);
+        pd.setIndeterminate(true);
+        pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        pd.setTitle("Please Wait");
+        pd.setMessage("Logging in...");
+        pd.setCancelable(false);
+
         toolbar = findViewById(R.id.toolbar);
         moodText = findViewById(R.id.moodText);
         moodEmoji = findViewById(R.id.moodEmoji);
@@ -68,14 +81,11 @@ public class DataActivity extends AppCompatActivity {
                             HashMap<String, String> hashMap = (HashMap<String, String>) documentSnapshot.getData().get(Integer.toString(i));
                             classList.add(hashMap);
                         }
+                        classAdapter.notifyDataSetChanged();
+                        pd.dismiss();
                     }
                 }
             }
         });
-
-        ClassAdapter classAdapter = new ClassAdapter(this, classList);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        classRecyclerView.setLayoutManager(layoutManager);
-        classRecyclerView.setAdapter(classAdapter);
     }
 }
