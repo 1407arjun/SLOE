@@ -1,6 +1,5 @@
-#SLOE (Supervised Learning in Online Education)
-
-##Cognized Online Education
+# SLOE (Supervised Learning in Online Education)
+## Cognized Online Education
 
 
 ## <img src="https://cdn.iconscout.com/icon/free/png-256/idea-1618744-1372450.png" width="32" height="32"> Abstract
@@ -52,3 +51,4 @@ The app is currently aimed only for students, but we aim to use data of all the 
 4. <https://codelabs.developers.google.com/codelabs/recognize-flowers-with-tensorflow-on-android/img/657431be3173fa86.png> TensorFlow Lite
 5. <https://docs.streamlit.io/en/stable/_static/logomark_website.png> Streamlit
 6. <https://cdn.shopify.com/s/files/1/0284/7024/7555/products/figma2x_1048x.png?v=1591893627> Figma
+7. <https://cdn.iconscout.com/icon/free/png-512/heroku-5-569467.png> Heroku
