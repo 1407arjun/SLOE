@@ -14,7 +14,7 @@ public class WebViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
         WebView myWebView = findViewById(R.id.webview);
-        myWebView.loadUrl("https://sloe.herokuapp.com");
+        myWebView.loadUrl("https://sloe-mlwebapp.herokuapp.com/");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
