@@ -17,13 +17,12 @@ public class WebViewActivity extends AppCompatActivity {
         WebView myWebView = findViewById(R.id.webview);
         WebSettings webSettings = myWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        myWebView.loadUrl("https://sloe-mlwebapp.herokuapp.com/");
+        myWebView.loadUrl("https://sloe-edu.herokuapp.com/");
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.ic_back);
-
     }
 }

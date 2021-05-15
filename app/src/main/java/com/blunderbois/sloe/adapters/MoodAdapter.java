@@ -70,7 +70,7 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
            holder.moodCard.setCardBackgroundColor(Color.parseColor("#ff726f"));
            emoji = "\uD83D\uDE1E";
            color = "#ff726f";
-       } else if(model.getOverall().equals("Happy")){
+       } else if(model.getOverall().equals("Cheerful")){
            holder.moodCard.setCardBackgroundColor(Color.parseColor("#fea82f"));
            emoji = "\uD83D\uDE00";
            color = "#fea82f";

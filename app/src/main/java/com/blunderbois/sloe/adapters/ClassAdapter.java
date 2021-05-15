@@ -45,7 +45,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
             holder.moodCard.setCardBackgroundColor(Color.parseColor("#A1ECBF"));
         } else if (list.get(position).get("mood").equals("Depressed")){
             holder.moodCard.setCardBackgroundColor(Color.parseColor("#ff726f"));
-        } else if(list.get(position).get("mood").equals("Happy")){
+        } else if(list.get(position).get("mood").equals("Cheerful")){
             holder.moodCard.setCardBackgroundColor(Color.parseColor("#fea82f"));
         } else if(list.get(position).get("mood").equals("Unattentive")){
             holder.moodCard.setCardBackgroundColor(Color.parseColor("#958ce8"));

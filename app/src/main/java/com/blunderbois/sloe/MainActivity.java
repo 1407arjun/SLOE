@@ -40,9 +40,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.ml.modeldownloader.CustomModel;
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions;
@@ -77,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CAMERA_PERMISSION_CODE = 100;
     private static final int STORAGE_PERMISSION_CODE = 101;
     String mCurrentPhotoPath;
+    int size, class1, class2, class3, class4, class5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -319,13 +322,14 @@ public class MainActivity extends AppCompatActivity {
 
             float currentMood = Math.max(attentive, Math.max(unattentive, Math.max(confused, Math.max(depressed, cheerful))));
 
-            Map<String, String> entry = new HashMap<>();
+            Map<String, Object> entry = new HashMap<>();
             entry.put("mood", moods.get(currentMood));
             LocalDateTime date = LocalDateTime.now();
             int startTime = date.getHour();
             entry.put("startTime", startTime + ":00");
             entry.put("endTime", (startTime + 1) + ":00");
 
+            size = 0;
             DocumentReference reference = FirebaseFirestore.getInstance()
                     .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(date.getDayOfMonth()));
             reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -334,21 +338,59 @@ public class MainActivity extends AppCompatActivity {
                     if (task.isSuccessful()){
                         DocumentSnapshot documentSnapshot = task.getResult();
                         if (documentSnapshot.exists()){
-                            int size = documentSnapshot.getData().size();
-                            Map<String, Object> hashMap = new HashMap<>();
-                            hashMap.put(Integer.toString(size + 1), entry);
-                            reference.set(hashMap, SetOptions.merge());
+                            size = documentSnapshot.getData().size();
+                        }else{
+                            size = 0;
                         }
+                        Map<String, Object> hashMap = new HashMap<>();
+                        hashMap.put(Integer.toString(size + 1), entry);
+                        reference.set(hashMap, SetOptions.merge());
+                        size++;
+
+                        class1 = 0; class2 = 0; class3 = 0; class4 = 0; class5 = 0;
+                        reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()){
+                                    DocumentSnapshot documentSnapshot = task.getResult();
+                                    if (documentSnapshot.exists()){
+                                        for (int i = 1; i <= documentSnapshot.getData().size(); i++) {
+                                            HashMap<String, String> hashMap = (HashMap<String, String>) documentSnapshot.getData().get(Integer.toString(i));
+                                            if (hashMap.get("mood").equals("Attentive")){
+                                                class1++;
+                                            }else if (hashMap.get("mood").equals("Unattentive")){
+                                                class2++;
+                                            }else if (hashMap.get("mood").equals("Confused")){
+                                                class3++;
+                                            }else if (hashMap.get("mood").equals("Depressed")){
+                                                class4++;
+                                            }else if (hashMap.get("mood").equals("Cheerful")){
+                                                class5++;
+                                            }
+                                        }
+                                        Log.i("HelloOutputAtt", Integer.toString(class1));
+                                        Log.i("HelloOutputUnAtt", Integer.toString(class2));
+                                        Log.i("HelloOutputConf", Integer.toString(class3));
+                                        Log.i("HelloOutputDep", Integer.toString(class4));
+                                        Log.i("HelloOutputCher", Integer.toString(class5));
+
+                                        Log.i("HelloOutputOver", getMax(class1, class2, class3, class4, class5));
+
+                                        Map<String, Object> map = new HashMap<>();
+                                        map.put("Overall", getMax(class1, class2, class3, class4, class5));
+                                        map.put("date", Integer.toString(date.getDayOfMonth()));
+                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
+                                                .child(mAuth.getCurrentUser().getUid()).child(Integer.toString(date.getDayOfMonth()));
+                                        databaseReference.setValue(map);
+                                    }
+                                }
+
+                            }
+                        });
+
                     }
                 }
             });
-
-            Map<String, Object> map = new HashMap<>();
-            map.put("Overall", moods.get(currentMood));
-            map.put("date", Integer.toString(date.getDayOfMonth()));
-            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
-                    .child(mAuth.getCurrentUser().getUid()).child(Integer.toString(date.getDayOfMonth()));
-            databaseReference.setValue(map);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -407,6 +449,63 @@ public class MainActivity extends AppCompatActivity {
         matrix.postRotate(angle);
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(),
                 matrix, true);
+    }
+
+    public String getMax(int a, int b, int c, int d, int e){
+        if (a > b) {
+            if (a > c) {
+                if (a > d) {
+                    if (a >= e)
+                        return "Attentive";
+                    else
+                        return "Cheerful";
+                } else{
+                    if (d >= e)
+                        return "Depressed";
+                    else
+                        return "Cheerful";
+                }
+            } else {
+                if (c > d){
+                    if (c > e)
+                        return "Confused";
+                    else
+                        return "Cheerful";
+                }
+                else{
+                    if (d >= e)
+                        return "Depressed";
+                    else
+                        return "Cheerful";
+                }
+
+            }
+        }else {
+            if (b > c) {
+                if (b > d) {
+                    if (b >= e)
+                        return "Unattentive";
+                    else
+                        return "Cheerful";
+                } else{
+                    if (d >= e)
+                        return "Depressed";
+                    else
+                        return "Cheerful";
+                }
+            } else {
+                if (c > d) {
+                    if (c >= e)
+                        return "Confused";
+                    else
+                        return "Cheerful";
+                } else
+                if (d >= e)
+                    return "Depressed";
+                else
+                    return "Cheerful";
+            }
+        }
     }
 
 }
