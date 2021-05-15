@@ -2,7 +2,10 @@ package com.blunderbois.sloe.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +31,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,6 +55,7 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
         return new MoodAdapter.MyViewHolder(view);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
        MoodModel model = list.get(position);
@@ -80,41 +86,38 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
            holder.moodCard.setCardBackgroundColor(Color.parseColor("#dbdbe5"));
        }
 
+        LocalDate currentDate = LocalDate.now();
+        int currentDay = currentDate.getDayOfMonth();
+        if(model.getDate().equals(Integer.toString(currentDay))){
+            holder.forColor.setBackgroundResource(R.drawable.border);
+        }
+
         String finalEmoji = emoji;
         String finalColor = color;
 
-        holder.moodCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                DocumentReference documentReference = FirebaseFirestore.getInstance()
-                        .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(position + 1));
-                documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot documentSnapshot = task.getResult();
-                            if (documentSnapshot.exists()) {
-                                Intent intent = new Intent(context, DataActivity.class);
-                                intent.putExtra("mood", model.getOverall());
-                                intent.putExtra("position", position);
-                                intent.putExtra("emoji", finalEmoji);
-                                intent.putExtra("color", finalColor);
-                                context.startActivity(intent);
-                            }else{
-                                Toast.makeText(context, "No time-wise data exists for the selected day", Toast.LENGTH_LONG).show();
-                            }
-                        }
+        holder.moodCard.setOnClickListener(v -> {
+            DocumentReference documentReference = FirebaseFirestore.getInstance()
+                    .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(position + 1));
+            documentReference.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()) {
+                        Intent intent = new Intent(context, DataActivity.class);
+                        intent.putExtra("mood", model.getOverall());
+                        intent.putExtra("position", position);
+                        intent.putExtra("emoji", finalEmoji);
+                        intent.putExtra("color", finalColor);
+                        context.startActivity(intent);
+                    }else{
+                        Toast.makeText(context, "No time-wise data exists for the selected day", Toast.LENGTH_LONG).show();
                     }
-                });
-            }
+                }
+            });
         });
 
-        holder.moodCard.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                context.startActivity(new Intent(context, WebViewActivity.class));
-                return true;
-            }
+        holder.moodCard.setOnLongClickListener(v -> {
+            context.startActivity(new Intent(context, WebViewActivity.class));
+            return true;
         });
     }
 
