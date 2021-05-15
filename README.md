@@ -50,5 +50,5 @@ The app is currently aimed only for students, but we aim to use data of all the 
 3. <img src=https://www.gstatic.com/devrel-devsite/prod/v1674d466be3b1154327dd11cf186e748303b1e92ae31ff35df0f5192fbd777ea/firebase/images/touchicon-180.png width="32" height="32"> Firebase
 4. <img src=https://codelabs.developers.google.com/codelabs/recognize-flowers-with-tensorflow-on-android/img/657431be3173fa86.png width="32" height="32"> TensorFlow Lite
 5. <img src=https://docs.streamlit.io/en/stable/_static/logomark_website.png width="32" height="32"> Streamlit
-6. <img src=https://cdn.shopify.com/s/files/1/0284/7024/7555/products/figma2x_1048x.png?v=1591893627 width="32" height="32"> Figma
+6. <img src=https://cdn.shopify.com/s/files/1/0284/7024/7555/products/figma2x_1048x.png width="32" height="32"> Figma
 7. <img src=https://cdn.iconscout.com/icon/free/png-512/heroku-5-569467.png width="32" height="32"> Heroku
