@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blunderbois.sloe.DataActivity;
 import com.blunderbois.sloe.R;
+import com.blunderbois.sloe.WebViewActivity;
 import com.blunderbois.sloe.models.ClassModel;
 import com.blunderbois.sloe.models.MoodModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -81,9 +82,10 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
 
         String finalEmoji = emoji;
         String finalColor = color;
-        holder.moodCard.setOnLongClickListener(new View.OnLongClickListener() {
+
+        holder.moodCard.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
+            public void onClick(View v) {
                 DocumentReference documentReference = FirebaseFirestore.getInstance()
                         .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(position + 1));
                 documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -104,6 +106,13 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
                         }
                     }
                 });
+            }
+        });
+
+        holder.moodCard.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                context.startActivity(new Intent(context, WebViewActivity.class));
                 return true;
             }
         });
