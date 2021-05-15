@@ -30,15 +30,7 @@ A machine learning model, trained on dataset of that child will look up for anom
 All of the data will be shown in dashboard, along with tags and color-coded. Also user will be notified for an anomaly.
 Also the user can lookup for previous data.
 
-##Proceeding
-Creating the UI of the app for the user to have a smooth experience whilst using it.
-Adding overlays to capture snapshots from video feed.
-Training the deep learning model. Integrating it with the app.
-Training ML model on a custom dataset on a child.
-Showing all the data in dashboard, and customized EDA to be shown for pro users.
-App is ready to use.
-
-##Business Model
+## <img src="https://cdn1.iconfinder.com/data/icons/currency-and-symbols-1/70/coin-10-512.png" width="32" height="32"> Business Model
 Our app will give user choice to choose from two plans : (i) A free tier - Basic plan, (ii) A paid - Pro Plan. Our service is aimed for betterment of  every child, so we wont be charging any amount for Anomaly detection. Free tier plan includes, a limited storage database, refreshed every 1 month. And notification for anomaly detection. Our Pro plan currently will include, customized EDA graphs(k-means) for the child, which can help parents and child to see during what time child has maximum concentration and other analysis. Apart from that, we’ll also provide live anomaly detection using cloud services. For Basic plan, anomaly detection will be performed after the class. Also, we’ve few beta features in pro plan, including detailed minute per minuter analytics on dashboard for every lecture.
 
 ## <img src="https://www.starface.com/wp-content/uploads/2017/05/STARFACE_Comfortphoning_Zukunftssicher-Icon-350-1.png" width="40" height="32"> Future scope
