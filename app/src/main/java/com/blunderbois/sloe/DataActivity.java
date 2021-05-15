@@ -8,9 +8,15 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.blunderbois.sloe.models.ClassModel;
+
+import java.util.ArrayList;
+
 public class DataActivity extends AppCompatActivity {
     private Toolbar toolbar;
     public static TextView moodText, moodEmoji;
+    public static ArrayList<ClassModel> classList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

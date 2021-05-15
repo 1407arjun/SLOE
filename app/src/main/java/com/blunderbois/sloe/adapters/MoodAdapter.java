@@ -16,7 +16,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.blunderbois.sloe.DataActivity;
 import com.blunderbois.sloe.R;
+import com.blunderbois.sloe.models.ClassModel;
 import com.blunderbois.sloe.models.MoodModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,6 +84,34 @@ public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> 
             @Override
             public boolean onLongClick(View v) {
                 Log.i("xx", model.getOverall());
+                DocumentReference documentReference = FirebaseFirestore.getInstance()
+                        .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(position + 1));
+                Log.i("lec1", "Here");
+                documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        Log.i("lec1", "There");
+                        if (task.isSuccessful()){
+                            Log.i("lec1", "Everywhere");
+                            DocumentSnapshot documentSnapshot = task.getResult();
+                            if (documentSnapshot.exists()){
+                                Log.i("lec1", "Again");
+                                //ClassModel classModel = (ClassModel) documentSnapshot.getData();
+                                for (int i = 1; i <= documentSnapshot.getData().size(); i++){
+                                    HashMap<String, String> hashMap = (HashMap<String, String>) documentSnapshot.getData().get(Integer.toString(i));
+                                    ClassModel classModel = new ClassModel();
+                                    classModel.setEndTime(hashMap.get("endTime"));
+                                    classModel.setStartTime(hashMap.get("startTime"));
+                                    classModel.setMood(hashMap.get("mood"));
+                                    DataActivity.classList.add((classModel));
+                                }
+                                //Log.i("lec1", DataActivity.classList.get(0).getMood());
+                            }else{
+                                Log.i("lec1", "No exists");
+                            }
+                        }
+                    }
+                });
                 Intent intent = new Intent(context, DataActivity.class);
                 intent.putExtra("mood", model.getOverall());
                 intent.putExtra("emoji", finalEmoji);
