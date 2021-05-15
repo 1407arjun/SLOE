@@ -29,8 +29,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.blunderbois.sloe.adapters.MoodAdapter;
 import com.blunderbois.sloe.models.MoodModel;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -39,6 +41,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.ml.modeldownloader.CustomModel;
@@ -323,11 +326,22 @@ public class MainActivity extends AppCompatActivity {
             entry.put("startTime", startTime + ":00");
             entry.put("endTime", (startTime + 1) + ":00");
 
-            Map<String, Object> hashMap = new HashMap<>();
-            hashMap.put("1", entry);
             DocumentReference reference = FirebaseFirestore.getInstance()
                     .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(date.getDayOfMonth()));
-            reference.set(hashMap, SetOptions.merge());
+            reference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if (task.isSuccessful()){
+                        DocumentSnapshot documentSnapshot = task.getResult();
+                        if (documentSnapshot.exists()){
+                            int size = documentSnapshot.getData().size();
+                            Map<String, Object> hashMap = new HashMap<>();
+                            hashMap.put(Integer.toString(size + 1), entry);
+                            reference.set(hashMap, SetOptions.merge());
+                        }
+                    }
+                }
+            });
 
             Map<String, Object> map = new HashMap<>();
             map.put("Overall", moods.get(currentMood));
