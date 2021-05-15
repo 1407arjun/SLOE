@@ -3,6 +3,7 @@ package com.blunderbois.sloe;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -11,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.blunderbois.sloe.adapters.MoodAdapter;
 import com.blunderbois.sloe.models.MoodModel;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,15 +32,21 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private ArrayList<MoodModel> moodList = new ArrayList<>();
+    private LottieAnimationView loading;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         TextView nameText = findViewById(R.id.nameTextView);
         TextView schoolText = findViewById(R.id.schoolTextView);
+        loading = findViewById(R.id.loading);
+
 
         mAuth = FirebaseAuth.getInstance();
         RecyclerView moodRecyclerView = findViewById(R.id.moodRecyclerView);
+
+        loading.setVisibility(View.VISIBLE);
+        moodRecyclerView.setVisibility(View.INVISIBLE);
 
         if (mAuth.getCurrentUser() != null){
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child(mAuth.getCurrentUser().getUid());
@@ -108,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
                         moodList.add(model);
                     }
                     moodAdapter.notifyDataSetChanged();
+                    if (moodList.isEmpty()){
+                        loading.setVisibility(View.VISIBLE);
+                        moodRecyclerView.setVisibility(View.INVISIBLE);
+                    } else {
+                        loading.setVisibility(View.INVISIBLE);
+                        moodRecyclerView.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -115,13 +130,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-
-
         }
-
-
-
-
     }
 
     @Override
