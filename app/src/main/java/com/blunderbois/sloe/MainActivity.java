@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
 
         loading.setVisibility(View.VISIBLE);
         moodRecyclerView.setVisibility(View.INVISIBLE);
-        moodList.clear();
 
         if (mAuth.getCurrentUser() != null){
             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("UserData").child(mAuth.getCurrentUser().getUid());
@@ -147,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
             reference.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    moodList.clear();
                     for(DataSnapshot dataSnapshot : snapshot.getChildren()){
                         MoodModel model = dataSnapshot.getValue(MoodModel.class);
                         moodList.add(model);
