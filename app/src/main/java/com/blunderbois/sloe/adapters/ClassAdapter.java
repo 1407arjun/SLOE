@@ -13,13 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blunderbois.sloe.R;
 import com.blunderbois.sloe.models.ClassModel;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder> {
     Context context;
-    ArrayList<ClassModel> list = new ArrayList<>();
+    ArrayList<Map<String, String>> list;
 
-    public ClassAdapter(Context context, ArrayList<ClassModel> list) {
+    public ClassAdapter(Context context, ArrayList<Map<String, String>> list) {
         this.context = context;
         this.list = list;
     }
@@ -33,10 +35,9 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.MyViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        ClassModel model = list.get(position);
-        holder.startTime.setText(model.getStartTime());
-        holder.endTime.setText(model.getEndTime());
-        holder.mood.setText(model.getMood());
+        holder.startTime.setText(list.get(position).get("startTime"));
+        holder.endTime.setText(list.get(position).get("endTime"));
+        holder.mood.setText(list.get(position).get("mood"));
     }
 
     @Override

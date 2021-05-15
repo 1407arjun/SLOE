@@ -1,27 +1,45 @@
 package com.blunderbois.sloe;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.blunderbois.sloe.adapters.ClassAdapter;
 import com.blunderbois.sloe.models.ClassModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DataActivity extends AppCompatActivity {
+
     private Toolbar toolbar;
     public static TextView moodText, moodEmoji;
-    public static ArrayList<ClassModel> classList;
+    public static ArrayList<Map<String, String>> classList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
 
+        RecyclerView classRecyclerView = findViewById(R.id.classRecyclerView);
         toolbar = findViewById(R.id.toolbar);
         moodText = findViewById(R.id.moodText);
         moodEmoji = findViewById(R.id.moodEmoji);
@@ -35,6 +53,29 @@ public class DataActivity extends AppCompatActivity {
         moodText.setText(bd.getString("mood"));
         moodText.setTextColor(Color.parseColor(bd.getString("color")));
         moodEmoji.setText(bd.getString("emoji"));
+        int position = bd.getInt("position");
 
+        classList.clear();
+        DocumentReference documentReference = FirebaseFirestore.getInstance()
+                .collection(FirebaseAuth.getInstance().getCurrentUser().getUid()).document(Integer.toString(position + 1));
+        documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()){
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()){
+                        for (int i = 1; i <= documentSnapshot.getData().size(); i++){
+                            HashMap<String, String> hashMap = (HashMap<String, String>) documentSnapshot.getData().get(Integer.toString(i));
+                            classList.add(hashMap);
+                        }
+                    }
+                }
+            }
+        });
+
+        ClassAdapter classAdapter = new ClassAdapter(this, classList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        classRecyclerView.setLayoutManager(layoutManager);
+        classRecyclerView.setAdapter(classAdapter);
     }
 }
