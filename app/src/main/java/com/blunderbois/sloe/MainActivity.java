@@ -80,14 +80,17 @@ public class MainActivity extends AppCompatActivity {
     private static final int STORAGE_PERMISSION_CODE = 101;
     String mCurrentPhotoPath;
     int size, class1, class2, class3, class4, class5;
+    private FloatingActionButton logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mAuth = FirebaseAuth.getInstance();
         TextView nameText = findViewById(R.id.nameTextView);
         TextView schoolText = findViewById(R.id.schoolTextView);
         loading = findViewById(R.id.loading);
+        logout = findViewById(R.id.logout);
 
         ProgressDialog progress = new ProgressDialog(this);
         progress.setMessage("Setting up for first time use");
@@ -95,6 +98,13 @@ public class MainActivity extends AppCompatActivity {
         progress.setIndeterminate(true);
         progress.setCancelable(false);
         progress.show();
+
+        logout.setOnClickListener(v -> {
+            mAuth.signOut();
+            Toast.makeText(this, "Successfully Logged Out ", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+            finish();
+        });
 
         CustomModelDownloadConditions conditions = new CustomModelDownloadConditions.Builder()
                 .build();
@@ -119,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mAuth = FirebaseAuth.getInstance();
+
         RecyclerView moodRecyclerView = findViewById(R.id.moodRecyclerView);
         MoodAdapter moodAdapter = new MoodAdapter(moodList,this);
         GridLayoutManager layoutManager = new GridLayoutManager(this,5);
