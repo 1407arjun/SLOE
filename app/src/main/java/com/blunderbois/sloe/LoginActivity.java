@@ -47,7 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         pd.setIndeterminate(true);
         pd.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         pd.setTitle("Please Wait");
-        pd.setMessage("Logging in...");
+        pd.setMessage("Logging in");
+        pd.setIndeterminate(true);
         pd.setCancelable(false);
 
         loginButton.setOnClickListener(v -> {

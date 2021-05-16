@@ -356,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
                                         DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference()
                                                 .child(mAuth.getCurrentUser().getUid()).child(Integer.toString(date.getDayOfMonth()));
                                         databaseReference.setValue(map);
+                                        Toast.makeText(MainActivity.this, "Behaviour recorded successfully", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
