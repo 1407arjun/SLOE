@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
             logout.setOnClickListener(v -> {
                 mAuth.signOut();
-                Toast.makeText(this, "Successfully Logged Out ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Logged out successfully", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 finish();
             });
