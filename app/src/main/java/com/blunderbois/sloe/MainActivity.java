@@ -92,43 +92,46 @@ public class MainActivity extends AppCompatActivity {
         loading = findViewById(R.id.loading);
         logout = findViewById(R.id.logout);
 
-        ProgressDialog progress = new ProgressDialog(this);
-        progress.setMessage("Setting up for first time use");
-        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        progress.setIndeterminate(true);
-        progress.setCancelable(false);
-        progress.show();
+        if(mAuth.getCurrentUser() != null) {
 
-        logout.setOnClickListener(v -> {
-            mAuth.signOut();
-            Toast.makeText(this, "Successfully Logged Out ", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
-        });
+            ProgressDialog progress = new ProgressDialog(this);
+            progress.setMessage("Setting up for first time use");
+            progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+            progress.setIndeterminate(true);
+            progress.setCancelable(false);
+            progress.show();
 
-        CustomModelDownloadConditions conditions = new CustomModelDownloadConditions.Builder()
-                .build();
-        FirebaseModelDownloader.getInstance()
-                .getModel("DetectionModel", DownloadType.LOCAL_MODEL, conditions)
-                .addOnSuccessListener(new OnSuccessListener<CustomModel>() {
-                    @Override
-                    public void onSuccess(CustomModel model) {
-                        progress.dismiss();
-                        // Download complete. Depending on your app, you could enable
-                        // the ML feature, or switch from the local model to the remote
-                        // model, etc.
-                        File modelFile = model.getFile();
-                        if (modelFile != null) {
-                            interpreter = new Interpreter(modelFile);
+            logout.setOnClickListener(v -> {
+                mAuth.signOut();
+                Toast.makeText(this, "Successfully Logged Out ", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
+            });
+
+            CustomModelDownloadConditions conditions = new CustomModelDownloadConditions.Builder()
+                    .build();
+            FirebaseModelDownloader.getInstance()
+                    .getModel("DetectionModel", DownloadType.LOCAL_MODEL, conditions)
+                    .addOnSuccessListener(new OnSuccessListener<CustomModel>() {
+                        @Override
+                        public void onSuccess(CustomModel model) {
+                            progress.dismiss();
+                            // Download complete. Depending on your app, you could enable
+                            // the ML feature, or switch from the local model to the remote
+                            // model, etc.
+                            File modelFile = model.getFile();
+                            if (modelFile != null) {
+                                interpreter = new Interpreter(modelFile);
+                            }
                         }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-            }
-        });
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                }
+            });
 
+        }
 
         RecyclerView moodRecyclerView = findViewById(R.id.moodRecyclerView);
         MoodAdapter moodAdapter = new MoodAdapter(moodList,this);
