@@ -1,5 +1,5 @@
 # SLOE: Supervised Learning in Online Education
-## Cognized Online Education || A Blunder Bois Project
+> ## Cognized Online Education || A Blunder Bois Project
 
 ### <img src="https://cdn.iconscout.com/icon/free/png-256/idea-1618744-1372450.png" width="32" height="32"> Abstract
 With the current pandemic going on, education has shifted to online mode, which has a lot of downsides. Amidst all of this, we have a positive service as an add-on to the current medium of online classes. Childhood depression is something that is underlooked and has long-term effects, including the mental growth of a person. There are many reasons which lead to a child’s abnormal behavior which cannot be known unless the child tells, like bullying, or getting scolded by a teacher, and even arguments between parents, and especially during these tough times it is really hard to cope up with mental health. Sometimes abnormalities get noticed, but most of the time, child won’t show such traits in front of parents and absorb what he/she is feeling.
