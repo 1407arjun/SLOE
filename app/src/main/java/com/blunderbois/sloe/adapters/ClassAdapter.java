@@ -9,13 +9,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.blunderbois.sloe.R;
-import com.blunderbois.sloe.models.ClassModel;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 

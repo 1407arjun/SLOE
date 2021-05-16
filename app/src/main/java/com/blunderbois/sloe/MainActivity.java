@@ -15,7 +15,6 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,8 +29,6 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.blunderbois.sloe.adapters.MoodAdapter;
 import com.blunderbois.sloe.models.MoodModel;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,13 +37,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.ml.modeldownloader.CustomModel;
 import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions;
 import com.google.firebase.ml.modeldownloader.DownloadType;
 import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader;
@@ -61,9 +55,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,21 +68,19 @@ public class MainActivity extends AppCompatActivity {
     private LottieAnimationView loading;
     private Interpreter interpreter;
     static final int REQUEST_TAKE_PHOTO = 1;
-    private static final int CAMERA_PERMISSION_CODE = 100;
-    private static final int STORAGE_PERMISSION_CODE = 101;
+    private static final int CAMERA_PERMISSION_CODE = 100, STORAGE_PERMISSION_CODE = 101;
     String mCurrentPhotoPath;
     int size, class1, class2, class3, class4, class5;
-    private FloatingActionButton logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mAuth = FirebaseAuth.getInstance();
+        loading = findViewById(R.id.loading);
         TextView nameText = findViewById(R.id.nameTextView);
         TextView schoolText = findViewById(R.id.schoolTextView);
-        loading = findViewById(R.id.loading);
-        logout = findViewById(R.id.logout);
+        FloatingActionButton logout = findViewById(R.id.logout);
 
         if(mAuth.getCurrentUser() != null) {
 
@@ -112,24 +102,13 @@ public class MainActivity extends AppCompatActivity {
                     .build();
             FirebaseModelDownloader.getInstance()
                     .getModel("DetectionModel", DownloadType.LOCAL_MODEL, conditions)
-                    .addOnSuccessListener(new OnSuccessListener<CustomModel>() {
-                        @Override
-                        public void onSuccess(CustomModel model) {
-                            progress.dismiss();
-                            // Download complete. Depending on your app, you could enable
-                            // the ML feature, or switch from the local model to the remote
-                            // model, etc.
-                            File modelFile = model.getFile();
-                            if (modelFile != null) {
-                                interpreter = new Interpreter(modelFile);
-                            }
+                    .addOnSuccessListener(model -> {
+                        progress.dismiss();
+                        File modelFile = model.getFile();
+                        if (modelFile != null) {
+                            interpreter = new Interpreter(modelFile);
                         }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
-                }
-            });
+                    }).addOnFailureListener(e -> Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show());
 
         }
 
@@ -157,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(MainActivity.this, error.getMessage(), Toast.LENGTH_LONG).show();
                 }
             });
 
@@ -188,14 +167,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         FloatingActionButton fab = findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
-                } else {
-                    dispatchTakePictureIntent();
-                }
+        fab.setOnClickListener(v -> {
+            if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_CODE);
+            } else {
+                dispatchTakePictureIntent();
             }
         });
     }
@@ -214,17 +190,15 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Camera permission granted", Toast.LENGTH_LONG).show();
                 dispatchTakePictureIntent();
             } else {
-                Toast.makeText(this, "Camera permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Camera permissions are required for this feature", Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Storage permission granted", Toast.LENGTH_LONG).show();
                 dispatchTakePictureIntent();
             } else {
-                Toast.makeText(this, "Storage permission denied", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Storage permissions are required for this feature", Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -262,8 +236,6 @@ public class MainActivity extends AppCompatActivity {
                         default:
                             rotatedBitmap = bitmap;
                     }
-                    ImageView imageView = findViewById(R.id.imageView2);
-                    imageView.setImageBitmap(rotatedBitmap);
                     processBitmap(rotatedBitmap);
                 }
             }
@@ -280,14 +252,10 @@ public class MainActivity extends AppCompatActivity {
             for (int x = 0; x < 224; x++) {
                 int px = bitmap.getPixel(x, y);
 
-                // Get channel values from the pixel value.
                 int r = Color.red(px);
                 int g = Color.green(px);
                 int b = Color.blue(px);
 
-                // Normalize channel values to [-1.0, 1.0]. This requirement depends
-                // on the model. For example, some models might require values to be
-                // normalized to the range [0.0, 1.0] instead.
                 float rf = (r - 127) / 255.0f;
                 float gf = (g - 127) / 255.0f;
                 float bf = (b - 127) / 255.0f;
@@ -381,13 +349,6 @@ public class MainActivity extends AppCompatActivity {
                                                 class5++;
                                             }
                                         }
-                                        Log.i("HelloOutputAtt", Integer.toString(class1));
-                                        Log.i("HelloOutputUnAtt", Integer.toString(class2));
-                                        Log.i("HelloOutputConf", Integer.toString(class3));
-                                        Log.i("HelloOutputDep", Integer.toString(class4));
-                                        Log.i("HelloOutputCher", Integer.toString(class5));
-
-                                        Log.i("HelloOutputOver", getMax(class1, class2, class3, class4, class5));
 
                                         Map<String, Object> map = new HashMap<>();
                                         map.put("Overall", getMax(class1, class2, class3, class4, class5));
@@ -417,24 +378,18 @@ public class MainActivity extends AppCompatActivity {
             requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
         } else {
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            // Ensure that there's a camera activity to handle the intent
             if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                // Create the File where the photo should go
                 File photoFile = null;
                 try {
                     photoFile = createImageFile();
                 } catch (IOException ex) {
                     // Error occurred while creating the File
                 }
-                // Continue only if the File was successfully created
+
                 if (photoFile != null) {
                     Uri photoURI = FileProvider.getUriForFile(this,
-                            "com.blunderbois.sloe.fileprovider",
-                            photoFile);
+                            "com.blunderbois.sloe.fileprovider", photoFile);
                     takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                    //takePictureIntent.putExtra("android.intent.extras.CAMERA_FACING", android.hardware.Camera.CameraInfo.CAMERA_FACING_FRONT);
-                    //takePictureIntent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
-                    //takePictureIntent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
                     startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
                 }
             }
@@ -442,17 +397,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private File createImageFile() throws IOException {
-        // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
 
-        // Save a file: path for use with ACTION_VIEW intents
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
         mCurrentPhotoPath = image.getAbsolutePath();
         return image;
     }
@@ -520,5 +469,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
 }

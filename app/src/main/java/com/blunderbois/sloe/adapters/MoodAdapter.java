@@ -2,11 +2,8 @@ package com.blunderbois.sloe.adapters;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.blunderbois.sloe.DataActivity;
 import com.blunderbois.sloe.R;
 import com.blunderbois.sloe.WebViewActivity;
-import com.blunderbois.sloe.models.ClassModel;
 import com.blunderbois.sloe.models.MoodModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -33,11 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-
-import static com.blunderbois.sloe.DataActivity.moodEmoji;
-import static com.blunderbois.sloe.DataActivity.moodText;
 
 public class MoodAdapter extends RecyclerView.Adapter<MoodAdapter.MyViewHolder> {
     ArrayList<MoodModel> list;
