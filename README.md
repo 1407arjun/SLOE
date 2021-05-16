@@ -44,3 +44,6 @@ The app is currently aimed only for students, but we aim to use data of all the 
 5. <img src=https://docs.streamlit.io/en/stable/_static/logomark_website.png width="32" height="32"> Streamlit
 6. <img src=https://cdn.shopify.com/s/files/1/0284/7024/7555/products/figma2x_1048x.png width="32" height="32"> Figma
 7. <img src=https://cdn.iconscout.com/icon/free/png-512/heroku-5-569467.png width="32" height="32"> Heroku
+
+## <img src="https://freeiconshop.com/wp-content/uploads/edd/code-flat.png" width="32" height="32"> APKs
+The project APK can be downloaded from the home page of the project or here.
